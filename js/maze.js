@@ -21,8 +21,6 @@
      */
 
     function settingDefault(element, settings){
-      // create a new property to hold default settings and merge
-      this.settings = $.extend({}, this, this.defaults, settings);
 
 	    // default variables operates
       this.initials = {
@@ -35,14 +33,16 @@
         // arrowLeft: '.arrow-left'
       };
 
-	    // extend this.initials args properties
-      $.extend(this,this.initials);
+      // create a new property to hold default settings and merge
+      this.settings = $.extend({}, this, this.defaults, settings);
 
       // operation on this.$el
       this.$el = $(element);
 
 	    // ensure that the value of 'this' always references this element
-      this.handleDirection = $.proxy(this.handleDirection,this);
+	    // use javascript bind replace
+      // this.handleKeydown = $.proxy(this.handleKeydown,this);
+      // this.handleClick = $.proxy(this.handleClick,this);
 
       this.init();
 
@@ -74,12 +74,12 @@
 
 	maze.prototype.itemBuild = function(){
 		// setting maze height and width
-		this.$el.css({width: this.settings.width * 100 + 'px', height: this.settings.height * 100 + 'px'});
+		this.$el.find('.content').css({width: this.settings.width * 100 + 'px', height: this.settings.height * 100 + 'px'});
 
 		for(var k = 0, l = this.settings.height; k < l; k += 1){
 			for(var i = 0, j = this.settings.width; i < j; i += 1){
 				var item = '<div class="item" data-coorx="' + i + '" data-coory="' + k +'"></div>';
-				this.$el.append(item);
+				this.$el.find('.content').append(item);
 			}
 		}
 		// console.log(this.$el.children().last().data('coordinates'));
@@ -174,18 +174,21 @@
 	 */
 
 	maze.prototype.eventsBind = function(){
-		$(document).keydown(throttle(this.handleDirection, 50));
+		// $(document).keydown(throttle(this.handleKeydown.bind(this), 50));
+		$(document).keydown(throttle(function(e){
+			this.handleKeydown(this.$el,e);
+		}.bind(this), 50));
+		this.$el.find('.controls').on('click', 'div', throttle(this.handleClick.bind(this), 50));
 	};
 
 	/**
-	 *  bulid items and settings maze height and width
+	 *  handle key down event
 	 */
 
-	maze.prototype.handleDirection = function(e){
+	maze.prototype.handleKeydown = function(el, e){
+		console.log(el);
 		var $current = this.$el.find('.current'),
-				$newCurrent;
-
-		var newX = $current.data('coorx'),
+				newX = $current.data('coorx'),
 		 		newY = $current.data('coory');
 
 		// left = 37, up = 38, right = 39, down = 40
@@ -217,13 +220,59 @@
 				return;
 		}
 
+		this.handleDirection(newX, newY);
+	};
+
+	/**
+	 *  handle click event
+	 */
+
+	maze.prototype.handleClick = function(e){
+		var $current = this.$el.find('.current'),
+				newX = $current.data('coorx'),
+		 		newY = $current.data('coory');
+		 		// console.log($(e.currentTarget).attr('class'));
+		 		// console.log(e.currentTarget.className);
+		 		// use javascript replace
+		switch(e.currentTarget.className) {
+			case 'left':
+	    	if(newX === 0)
+	    		return;
+				newX -= 1;
+				break;
+	    case 'up':
+	    	if(newY === 0)
+					return;
+				newY -= 1;
+				break;
+	    case 'right':
+	    	if(newX === this.settings.width - 1)
+	    		return;
+				newX += 1;
+				break;
+	    case 'down':
+	    	if(newY === this.settings.height - 1)
+	    		return;
+				newY += 1;
+				break;
+			default:
+				return;
+		}
+		this.handleDirection(newX, newY);
+	};
+
+	/**
+	 *  setting new current
+	 */
+
+	maze.prototype.handleDirection = function(newX, newY){
+
 		// check wall
 		if(checkWall(this.$el.find('.item'), newX, newY))
 			return;
 
-		$current.removeClass('current');
+		this.$el.find('.current').removeClass('current');
 		this.$el.find('.item').each(function(index, element){
-
 			var $this = $(element);
 			if(newX === this.$el.find('.end').data('coorx') && newY === this.$el.find('.end').data('coory')){
 				alert('over');
@@ -243,6 +292,7 @@
 	$.fn.maze = function(options){
     return this.each(function(index,el){
       el.maze = new maze(el,options);
+      console.log(el.maze);
     });
   };
 
@@ -287,5 +337,4 @@
       }
     };
   }
-
 });
