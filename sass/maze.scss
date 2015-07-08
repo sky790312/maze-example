@@ -1,0 +1,53 @@
+$item-width: 100px;
+$item-height: 100px;
+
+#maze {
+
+
+	// .start {
+	// 	position: absolute;
+	// 	top: 0;
+	// 	left: - $item-width;
+	// 	width: $item-width;
+	// 	height: $item-height;
+	// 	border: 1px solid black;
+	// }
+
+	// .end {
+	// 	position: absolute;
+	// 	top: 100%;
+	// 	right: - $item-width;
+	// 	width: $item-width;
+	// 	height: $item-height;
+	// 	border: 1px solid black;
+	// }
+
+	// .content {
+		position: relative;
+		width: 400px; // default width
+		height: 400px; // default height
+		margin: 40px auto;
+	// }
+
+	.item {
+		// position: absolute;
+		float: left;
+		width: $item-width;
+		height: $item-width;
+		border: 1px solid black;
+	}
+
+	.wall {
+		background-color: black;
+	}
+
+	.current {
+		background: #e3e3e3 url("../images/go.jpg") no-repeat 50% 50%;
+  	background-size: 100%;
+	}
+
+	.end {
+		background: url("../images/exit.png") no-repeat 50% 50%;
+  	background-size: 100%;
+	}
+}

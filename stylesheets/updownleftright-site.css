@@ -1,0 +1,28 @@
+/* line 4, ../sass/updownleftright-site.scss */
+#maze {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 40px auto;
+}
+/* line 32, ../sass/updownleftright-site.scss */
+#maze .item {
+  float: left;
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+}
+/* line 40, ../sass/updownleftright-site.scss */
+#maze .wall {
+  background-color: black;
+}
+/* line 44, ../sass/updownleftright-site.scss */
+#maze .current {
+  background: #e3e3e3 url("../images/go.jpg") no-repeat 50% 50%;
+  background-size: 100%;
+}
+/* line 49, ../sass/updownleftright-site.scss */
+#maze .end {
+  background: url("../images/exit.png") no-repeat 50% 50%;
+  background-size: 100%;
+}
