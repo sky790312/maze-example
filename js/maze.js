@@ -15,6 +15,7 @@
 })(function($){
 
 	var maze = (function(element, settings){
+    var instanceUid = 0;
 
     /*
      *  constructor function for maze
@@ -22,19 +23,16 @@
 
     function settingDefault(element, settings){
 
-	    // default variables operates
+
+	    // default settings
       this.initials = {
       	width: 4,
       	height: 4,
       	mode: 'easy'
-        // arrowUp: '.arrow-up',
-        // arrowDown: '.arrow-down',
-        // arrowRight: '.arrow-right',
-        // arrowLeft: '.arrow-left'
       };
 
-      // create a new property to hold default settings and merge
-      this.settings = $.extend({}, this, this.defaults, settings);
+      // create a new property to hold default settings and merge user settings
+      this.settings = $.extend({}, this, this.initials, settings);
 
       // operation on this.$el
       this.$el = $(element);
@@ -46,8 +44,8 @@
 
       this.init();
 
-		 	// provides each carousel with a unique ID
-      // this.instanceUid = instanceUid++;
+		 	// provides each maze with a unique ID
+      this.instanceUid = instanceUid++;
     }
 
     return settingDefault;
@@ -174,10 +172,10 @@
 	 */
 
 	maze.prototype.eventsBind = function(){
-		// $(document).keydown(throttle(this.handleKeydown.bind(this), 50));
-		$(document).keydown(throttle(function(e){
-			this.handleKeydown(this.$el,e);
-		}.bind(this), 50));
+		// $(document).keydown(throttle(function(e){
+			// this.handleKeydown(this.$el.find('.current'),e);
+		// }.bind(this), 50));
+		$(document).keydown(throttle(this.handleKeydown.bind(this), 50));
 		this.$el.find('.controls').on('click', 'div', throttle(this.handleClick.bind(this), 50));
 	};
 
@@ -185,8 +183,8 @@
 	 *  handle key down event
 	 */
 
-	maze.prototype.handleKeydown = function(el, e){
-		console.log(el);
+	maze.prototype.handleKeydown = function(e){
+		// console.log(el);
 		var $current = this.$el.find('.current'),
 				newX = $current.data('coorx'),
 		 		newY = $current.data('coory');
@@ -292,7 +290,6 @@
 	$.fn.maze = function(options){
     return this.each(function(index,el){
       el.maze = new maze(el,options);
-      console.log(el.maze);
     });
   };
 
